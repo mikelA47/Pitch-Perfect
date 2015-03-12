@@ -27,25 +27,24 @@ class PlaySoundsViewController: UIViewController {
     @IBAction func chipmunkPressed(sender: UIButton) {
         playAudioWithVariablePitch(1000)
     }
+    /*
+    Udacity assessment: "The stopPressed function is defined in the PlaySoundsViewController but not used at all.."
+    This function is an action that occurs when the stop button is pressed. It´s in use and I think is necesary to give the chance to the users to stop listening what they recorded. 
+    */
     @IBAction func stopPressed(sender: UIButton) {
-        audioPlayer.stop()
-        audioEngine.stop()
+        //audioPlayer.stop()
+        //audioEngine.stop()
+        stopEngineAudioPlayer()
     }
     @IBAction func fastPressed(sender: UIButton) {
-        audioPlayer.rate = 2
-        audioPlayer.currentTime = 0.0
-        audioPlayer.play()
+        playAudioWithVariableRate(2)
     }
     @IBAction func slowPressed(sender: UIButton) {
-        audioPlayer.rate = 0.5
-        audioPlayer.currentTime = 0.0
-        audioPlayer.play()
+        playAudioWithVariableRate(0.5)
     }
     
     @IBAction func playAudioEcho(sender: UIButton) {
-        audioPlayer.stop()
-        audioEngine.stop()
-        audioEngine.reset()
+        stopEngineAudioPlayer() //task 3
         
         var audioPlayerNode = AVAudioPlayerNode()
         audioEngine.attachNode(audioPlayerNode)
@@ -71,9 +70,7 @@ class PlaySoundsViewController: UIViewController {
 
     }
     func playAudioWithReverb(){
-        audioPlayer.stop()
-        audioEngine.stop()
-        audioEngine.reset()
+        stopEngineAudioPlayer() //task 3
         
         var audioPlayerNode = AVAudioPlayerNode()
         audioEngine.attachNode(audioPlayerNode)
@@ -94,11 +91,15 @@ class PlaySoundsViewController: UIViewController {
         audioPlayerNode.play()
     }
 
+    func playAudioWithVariableRate(rate: Float){
+        stopEngineAudioPlayer() //task 3
+        audioPlayer.rate = rate
+        //audioPlayer.currentTime = 0.0
+        audioPlayer.play()
+    }
     
     func playAudioWithVariablePitch(pitch: Float){
-        audioPlayer.stop()
-        audioEngine.stop()
-        audioEngine.reset()
+        stopEngineAudioPlayer() //task 3
         
         var audioPlayerNode = AVAudioPlayerNode()
         audioEngine.attachNode(audioPlayerNode)
@@ -116,39 +117,22 @@ class PlaySoundsViewController: UIViewController {
         audioPlayerNode.play()
     }
     
+    func stopEngineAudioPlayer() {  //function created to avoid repetition of code
+        audioPlayer.stop()
+        audioEngine.stop()
+        audioEngine.reset()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-/*      if var filePath = NSBundle.mainBundle().pathForResource("movie_quote", ofType: "mp3"){
-            var filePathUrl = NSURL.fileURLWithPath(filePath)
-            //audioPlayer = AVAudioPlayer(contentsOfURL: filePathUrl, error: nil)
-            //audioPlayer.enableRate = true
-        }else{
-            println("Error. The filePath is empty\n")
-        }*/
 
-        // Do any additional setup after loading the view.
-      
         audioPlayer = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl, error: nil)
         audioPlayer.enableRate = true
-        
         audioEngine = AVAudioEngine()
         audioFile = AVAudioFile(forReading: receivedAudio.filePathUrl, error: nil)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

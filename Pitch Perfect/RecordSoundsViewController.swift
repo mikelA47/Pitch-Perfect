@@ -14,6 +14,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     var audioRecorder:AVAudioRecorder!
     var recordedAudio:RecordedAudio!
     var pauseRecorder = 0
+    //var created to be able to discriminate if we paused the recording at least once, if we pause at least once the recording it will show a message and whenever we tap again the microphone it will resume the recording using the same file instead of a new one
     
     @IBOutlet weak var pauseButton: UIButton!
     @IBOutlet weak var stopButton: UIButton!
@@ -23,14 +24,14 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
     }
     
     override func viewWillAppear(animated: Bool) {
         stopButton.hidden = true
         recordButton.enabled = true
         pauseButton.hidden = true
-        recordingLabel.text = "Recording"
+        recordingLabel.hidden = false //Task 4, now the message should appear from the first moment instead of being hidden as the lesson requested
+        recordingLabel.text = "Tap to Record" //Task 4
         
     }
 
@@ -40,16 +41,13 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     }
 
     @IBAction func microphonePressed(sender: UIButton) {
-        recordingLabel.hidden = false
+        recordingLabel.text = "Recording in process"
         stopButton.hidden = false
         pauseButton.hidden = false
         recordButton.enabled = false
         
-        if (pauseRecorder == 0)
-        {
-            
+        if (pauseRecorder == 0) { //0 if is a new recording -1 if we resume the recording
             let dirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
-        
             let currentDateTime = NSDate()
             let formatter = NSDateFormatter()
             formatter.dateFormat = "ddMMyyyy-HHmmss"
@@ -67,32 +65,26 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
             audioRecorder.prepareToRecord()
             audioRecorder.record()
         }
-        else if (pauseRecorder == -1)
-        {
+        else {
             audioRecorder.record()
-            recordingLabel.text = "Recording"
+            recordingLabel.text = "Recording in process"
         }
     }
     
     @IBAction func pausePressed(sender: UIButton) {
             audioRecorder.pause()
-            pauseRecorder = -1
-            recordingLabel.text = "Recording pause"
+            pauseRecorder = -1 //We change the value to -1 to indicate that the record has been paused. Because of that when we press the microphen again no new file will be created
+            recordingLabel.text = "Tap to continue recording"
             pauseButton.hidden = true
             recordButton.enabled = true
     }
     
     func audioRecorderDidFinishRecording(recorder: AVAudioRecorder!, successfully flag: Bool) {
-        if(flag)
-        {
-            recordedAudio = RecordedAudio()
-            recordedAudio.filePathUrl = recorder.url
-            recordedAudio.title = recorder.url.lastPathComponent
-        
+        if(flag) {
+            recordedAudio = RecordedAudio(filePathURL: recorder.url,title: recorder.url.lastPathComponent!)
             self.performSegueWithIdentifier("stopRecording", sender: recordedAudio)
         }
-        else
-        {
+        else {
             println("Recording was not successful")
             recordButton.enabled = true
             stopButton.hidden = true
