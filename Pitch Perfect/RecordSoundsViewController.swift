@@ -13,7 +13,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     
     var audioRecorder:AVAudioRecorder!
     var recordedAudio:RecordedAudio!
-    var pauseRecorder = 0
+    var pauseRecorder = false
     //var created to be able to discriminate if we paused the recording at least once, if we pause at least once the recording it will show a message and whenever we tap again the microphone it will resume the recording using the same file instead of a new one
     
     @IBOutlet weak var pauseButton: UIButton!
@@ -46,7 +46,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         pauseButton.hidden = false
         recordButton.enabled = false
         
-        if (pauseRecorder == 0) { //0 if is a new recording -1 if we resume the recording
+        if (pauseRecorder == false) { //false if is a new recording true if we resume the recording
             let dirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as String
             let currentDateTime = NSDate()
             let formatter = NSDateFormatter()
@@ -73,7 +73,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     
     @IBAction func pausePressed(sender: UIButton) {
             audioRecorder.pause()
-            pauseRecorder = -1 //We change the value to -1 to indicate that the record has been paused. Because of that when we press the microphen again no new file will be created
+            pauseRecorder = true //We change the value to true to indicate that the record has been paused. Because of that when we press the microphen again no new file will be created
             recordingLabel.text = "Tap to continue recording"
             pauseButton.hidden = true
             recordButton.enabled = true
@@ -105,7 +105,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         recordingLabel.hidden = true
         pauseButton.hidden = true
         audioRecorder.stop()
-        pauseRecorder = 0
+        pauseRecorder = false
         var audioSession = AVAudioSession.sharedInstance()
         audioSession.setActive(false, error: nil)
     }

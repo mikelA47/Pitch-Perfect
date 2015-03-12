@@ -29,7 +29,7 @@ class PlaySoundsViewController: UIViewController {
     }
     /*
     Udacity assessment: "The stopPressed function is defined in the PlaySoundsViewController but not used at all.."
-    This function is an Interface Builder Action that occurs when the stop button is pressed. It´s in use and in my opinion is necesary to give the chance to the users to stop listening what they recorded, but if you think is no necesary I can take it out and break the connection with the button.
+    This function is an Interface Builder Action that occurs when the stop button is pressed. In my opinion is necesary to give the chance to the users to stop listening what they recorded, but if you think is no necesary I can take it out and break the connection with the button.
     */
     @IBAction func stopPressed(sender: UIButton) {
         stopEngineAudioPlayer()
