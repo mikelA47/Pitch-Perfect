@@ -29,18 +29,16 @@ class PlaySoundsViewController: UIViewController {
     }
     /*
     Udacity assessment: "The stopPressed function is defined in the PlaySoundsViewController but not used at all.."
-    This function is an action that occurs when the stop button is pressed. It´s in use and I think is necesary to give the chance to the users to stop listening what they recorded. 
+    This function is an Interface Builder Action that occurs when the stop button is pressed. It´s in use and in my opinion is necesary to give the chance to the users to stop listening what they recorded, but if you think is no necesary I can take it out and break the connection with the button.
     */
     @IBAction func stopPressed(sender: UIButton) {
-        //audioPlayer.stop()
-        //audioEngine.stop()
         stopEngineAudioPlayer()
     }
     @IBAction func fastPressed(sender: UIButton) {
-        playAudioWithVariableRate(2)
+        playAudioWithVariableRate(2) //put code into a function because almost the same than slow
     }
     @IBAction func slowPressed(sender: UIButton) {
-        playAudioWithVariableRate(0.5)
+        playAudioWithVariableRate(0.5) //put code into a function because almost the same than fast
     }
     
     @IBAction func playAudioEcho(sender: UIButton) {
@@ -49,17 +47,16 @@ class PlaySoundsViewController: UIViewController {
         var audioPlayerNode = AVAudioPlayerNode()
         audioEngine.attachNode(audioPlayerNode)
        
-        var reverbNode: AVAudioUnitReverb = AVAudioUnitReverb()
-        reverbNode.loadFactoryPreset(.Cathedral)
-        reverbNode.wetDryMix = 50
-        var delayNode: AVAudioUnitDelay = AVAudioUnitDelay()
-        delayNode.wetDryMix = 30
-        audioEngine.attachNode(delayNode)
+        var reverbNode: AVAudioUnitReverb = AVAudioUnitReverb()//reverb node
+        reverbNode.loadFactoryPreset(.Cathedral) //selction of the reverb effect from 1 to 12
+        reverbNode.wetDryMix = 50 //kind of % of effect aply
+        var delayNode: AVAudioUnitDelay = AVAudioUnitDelay() //delay node
+        delayNode.wetDryMix = 30 //kind of % of effect apply
+        audioEngine.attachNode(delayNode) //add delay node
         audioEngine.attachNode(reverbNode) //add reverb node for a more credible effect
         
-        
+        //conection of the nodes
         audioEngine.connect(audioPlayerNode, to: reverbNode, format: nil)
-        
         audioEngine.connect(reverbNode, to: delayNode, format: nil)
         audioEngine.connect(delayNode, to: audioEngine.outputNode, format: nil)
         
@@ -75,13 +72,13 @@ class PlaySoundsViewController: UIViewController {
         var audioPlayerNode = AVAudioPlayerNode()
         audioEngine.attachNode(audioPlayerNode)
 
-        var reverbNode: AVAudioUnitReverb = AVAudioUnitReverb()
-        reverbNode.loadFactoryPreset(.LargeHall)
-        reverbNode.wetDryMix = 50
+        var reverbNode: AVAudioUnitReverb = AVAudioUnitReverb() //reverb effect node
+        reverbNode.loadFactoryPreset(.LargeHall) //selection of the reverb effect from 1 to 12
+        reverbNode.wetDryMix = 50 //% effect apply
         
-        audioEngine.attachNode(reverbNode)
+        audioEngine.attachNode(reverbNode) //add reverb node
         
-        
+        //conection of the nodes
         audioEngine.connect(audioPlayerNode, to: reverbNode, format: nil)
         audioEngine.connect(reverbNode, to: audioEngine.outputNode, format: nil)
         
@@ -94,7 +91,7 @@ class PlaySoundsViewController: UIViewController {
     func playAudioWithVariableRate(rate: Float){
         stopEngineAudioPlayer() //task 3
         audioPlayer.rate = rate
-        //audioPlayer.currentTime = 0.0
+        audioPlayer.currentTime = 0.0
         audioPlayer.play()
     }
     
